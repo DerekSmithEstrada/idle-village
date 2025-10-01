@@ -1,39 +1,95 @@
-import InventoryItem from "./InventoryItem";
+import { useMemo } from 'react';
+import { useGame } from '../../store/gameStore';
+import { selectTopBarSummary } from '../../selectors/inventorySelectors';
 
 const ICONS: Record<string, string> = {
-  sticks: "/assets/icons/sticks.png",
-  logs: "/assets/icons/logs.png",
-  planks: "/assets/icons/planks.png",
-  bread: "/assets/icons/bread.png",
-  berries: "/assets/icons/berries.png",
-  default: "/assets/icons/default.png",
+  happiness: '😊',
+  population: '👥',
+  coins: '🪙',
+  logs: '🌲',
+  stone: '🪨',
+  planks: '🪵',
+  wheat: '🌾',
+  tools: '🛠️',
 };
 
-export type InventoryRecord = {
-  id: string;
-  label: string;
-  perMinute: number;
-  quantity: number;
-  capacity: number;
-};
+function formatNumber(value: number): string {
+  if (value >= 1000) {
+    return `${Math.round(value).toLocaleString('en-US')}`;
+  }
+  if (value >= 100) {
+    return Math.round(value).toString();
+  }
+  return value.toFixed(0);
+}
 
-type Props = {
-  items: InventoryRecord[];
-};
+export default function InventoryBar() {
+  const summary = useGame(selectTopBarSummary);
 
-export default function InventoryBar({ items }: Props) {
-  if (!items?.length) return null;
+  const items = useMemo(
+    () => [
+      {
+        id: 'happiness',
+        icon: ICONS.happiness,
+        label: 'Happiness',
+        value: `${Math.round(summary.happiness * 100)}%`,
+      },
+      {
+        id: 'population',
+        icon: ICONS.population,
+        label: 'Population',
+        value: `${summary.villagers}/${summary.villagersCap}`,
+      },
+      {
+        id: 'coins',
+        icon: ICONS.coins,
+        label: 'Coins',
+        value: formatNumber(summary.gold),
+      },
+      {
+        id: 'logs',
+        icon: ICONS.logs,
+        label: 'Logs',
+        value: formatNumber(summary.logs),
+      },
+      {
+        id: 'stone',
+        icon: ICONS.stone,
+        label: 'Stone',
+        value: formatNumber(summary.stone),
+      },
+      {
+        id: 'planks',
+        icon: ICONS.planks,
+        label: 'Planks',
+        value: formatNumber(summary.planks),
+      },
+      {
+        id: 'wheat',
+        icon: ICONS.wheat,
+        label: 'Wheat',
+        value: formatNumber(summary.wheat),
+      },
+      {
+        id: 'tools',
+        icon: ICONS.tools,
+        label: 'Tools',
+        value: formatNumber(summary.tools),
+      },
+    ],
+    [summary]
+  );
+
   return (
-    <div className="w-full flex flex-wrap gap-8 items-center py-2">
-      {items.map((it) => (
-        <InventoryItem
-          key={it.id}
-          iconSrc={ICONS[it.id] ?? ICONS.default}
-          label={it.label}
-          perMinute={it.perMinute}
-          quantity={it.quantity}
-          capacity={it.capacity}
-        />
+    <div className="inventory-bar">
+      {items.map((item) => (
+        <div key={item.id} className="inventory-chip">
+          <span className="inventory-icon" aria-hidden>{item.icon}</span>
+          <div className="inventory-meta">
+            <span className="inventory-label">{item.label}</span>
+            <span className="inventory-value">{item.value}</span>
+          </div>
+        </div>
       ))}
     </div>
   );
