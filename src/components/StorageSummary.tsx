@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useGame } from '../store/gameStore';
 import { ITEM_ORDER, ITEMS } from '../data/items';
 

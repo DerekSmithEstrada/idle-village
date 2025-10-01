@@ -1,5 +1,5 @@
-import React from "react";
-import InventoryBar, { InventoryRecord } from "./InventoryBar";
+import InventoryBar from "./InventoryBar";
+import type { InventoryRecord } from "./InventoryBar";
 import { useGame } from "../../store/gameStore";
 import { ITEM_ORDER, ITEMS } from "../../data/items";
 

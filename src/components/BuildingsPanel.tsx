@@ -1,4 +1,3 @@
-import React from 'react';
 import { useGame } from '../store/gameStore';
 import { BUILDINGS, type BuildingId } from '../data/buildings';
 
