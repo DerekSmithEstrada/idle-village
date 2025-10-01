@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Header from './components/Header';
-import InventoryBar from './components/inventory/InventoryBar';
 import BuildingsPanel from './components/BuildingsPanel';
 import SeasonClock from './components/SeasonClock';
 import StorageSummary from './components/StorageSummary';

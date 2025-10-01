@@ -1,4 +1,3 @@
-import React from "react";
 import InventoryItem from "./InventoryItem";
 
 const ICONS: Record<string, string> = {

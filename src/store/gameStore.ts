@@ -53,11 +53,11 @@ function makeInitialInventory(): Inventory {
 }
 
 function makeInitialMax(): MaxByItem {
-  const max: MaxByItem = {} as any;
+  const max: Partial<MaxByItem> = {};
   for (const id of ITEM_ORDER) {
     max[id] = ITEMS[id].baseMax ?? 0;
   }
-  return max;
+  return max as MaxByItem;
 }
 
 function makeInitialBuildings(): Record<BuildingId, BuildingState> {
