@@ -1,51 +1,62 @@
-import { useEffect } from 'react';
-import Header from './components/Header';
+import { useEffect, useState } from 'react';
+import InventoryBar from './components/inventory/InventoryBar';
 import BuildingsPanel from './components/BuildingsPanel';
 import SeasonClock from './components/SeasonClock';
-import StorageSummary from './components/StorageSummary';
-import WarehousesPanel from './components/WarehousesPanel';
-import GranaryPanel from './components/GranaryPanel';
+import TradePanel from './components/TradePanel';
 import { useGame } from './store/gameStore';
+import { selectWorkerSummary } from './selectors/inventorySelectors';
 import './styles.css';
-import InventoryBarContainer from "./components/inventory/InventoryBarContainer";
 
 export default function App() {
-  const tick = useGame((s) => s.tick);
-  const addVillager = useGame((s) => s.addVillager);
+  const tick = useGame((state) => state.tick);
+  const workerSummary = useGame(selectWorkerSummary);
+  const [tooltip, setTooltip] = useState<string | null>(null);
 
   useEffect(() => {
-    const iv = setInterval(() => tick(), 1000);
-    return () => clearInterval(iv);
+    const interval = setInterval(() => tick(), 1000);
+    return () => clearInterval(interval);
   }, [tick]);
 
-  useEffect(() => {
-    const vs = setInterval(() => addVillager(), 60000);
-    return () => clearInterval(vs);
-  }, [addVillager]);
-
   return (
-    <div className="min-h-screen bg-slate-50 text-gray-900">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-white/90 backdrop-blur border-b">
-        <Header />
-      </header>
+    <div className="app-shell">
+      <InventoryBar />
+      <main className="content-grid">
+        <section className="panel">
+          <header className="panel-header">
+            <h2>Buildings</h2>
+          </header>
+          <div className="panel-body">
+            <BuildingsPanel onShowTooltip={setTooltip} />
+          </div>
+        </section>
 
-      {/* INVENTARIO (debajo del header) */}
-      <section className="px-4 py-3">
-        <InventoryBarContainer />
-      </section>
+        <section className="panel">
+          <header className="panel-header">
+            <h2>Jobs</h2>
+            <span className="panel-counter">
+              {workerSummary.assigned}/{workerSummary.capacity}
+            </span>
+          </header>
+          <div className="panel-body jobs-panel">
+            <SeasonClock />
+            {tooltip && (
+              <div className="jobs-tooltip">
+                {tooltip.split('\n').map((line) => (
+                  <p key={line}>{line}</p>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
 
-      {/* CONTENIDO */}
-      <main className="px-4 pb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-3">
-          <SeasonClock />
-          <StorageSummary />
-          <WarehousesPanel />
-          <GranaryPanel />
-        </div>
-        <div className="space-y-4">
-          <BuildingsPanel />
-        </div>
+        <section className="panel">
+          <header className="panel-header">
+            <h2>Trade</h2>
+          </header>
+          <div className="panel-body">
+            <TradePanel />
+          </div>
+        </section>
       </main>
     </div>
   );
